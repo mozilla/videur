@@ -28,6 +28,7 @@ else
   hits = hits + 1
   stats:set(remote_ip, hits, throttle_time)
   if hits >= max_hits then
-    ngx.exit(ngx.HTTP_FORBIDDEN);
+    -- 429 - Too many requests
+    ngx.exit(429);
   end
 end
