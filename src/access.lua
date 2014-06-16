@@ -14,8 +14,8 @@ local cjson = require "cjson"
 
 -- config
 -- we are allowing 10 hits per 10 seconds
-local max_hits = 10
-local throttle_time = 10
+local max_hits = tonumber(ngx.var.max_hits);
+local throttle_time = tonumber(ngx.var.throttle_time);
 
 -- how many hits we got on this IP ?
 local stats = ngx.shared.stats
@@ -32,3 +32,6 @@ else
     ngx.exit(429);
   end
 end
+
+-- we're good
+ngx.exit(ngx.OK);
