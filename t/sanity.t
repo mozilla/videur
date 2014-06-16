@@ -20,7 +20,7 @@ run_tests();
 
 __DATA__
 
-=== TEST 1: Just to make sure we know how to make tests
+=== TEST 1: The thirdt call should return a 429
 --- http_config eval: $::HttpConfig
 --- config
     set $max_hits 2;
