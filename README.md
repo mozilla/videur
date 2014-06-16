@@ -33,6 +33,7 @@ features like:
 Thanks to http://wiki.nginx.org/HttpLuaModule and OpenResty, 
 Nginx's behavior can be completely customized to implement those features.
 
+XXX explain here why Lua rocks.
 
 Videur has two goals:
 
