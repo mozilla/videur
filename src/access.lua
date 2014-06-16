@@ -14,7 +14,7 @@ local cjson = require "cjson"
 
 -- config
 -- we are allowing 10 hits per 10 seconds
-local max_hits = tonumber(ngx.var.max_hits);
+local max_hits = tonumber(ngx.var.max_hits) + 1;
 local throttle_time = tonumber(ngx.var.throttle_time);
 
 -- how many hits we got on this IP ?

@@ -4,10 +4,9 @@ use lib 'lib';
 use Test::Nginx::Socket;
 use Cwd qw(cwd);
 
-
 repeat_each(1);
 
-plan tests => repeat_each() * blocks() * 4;
+plan tests => repeat_each() * blocks() * 6;
 my $pwd = cwd();
 
 our $HttpConfig = qq{
@@ -24,18 +23,22 @@ __DATA__
 === TEST 1: Just to make sure we know how to make tests
 --- http_config eval: $::HttpConfig
 --- config
-    set $max_hits '1';
-    set $throttle_time '10';
+    set $max_hits 2;
+    set $throttle_time 10;
     set $script '../../src/access.lua';
+    access_by_lua_file $script;
 
-    location /echo {
-        access_by_lua_file $script;
+    location /hello {
         echo "hello";
     }
 
+    location /world {
+        echo "world";
+    }
+
 --- request eval
-    ["GET /echo", "GET /echo"]
+    ["GET /hello", "GET /hello", "GET /world"]
 --- error_code eval
-    [200, 429]
+    [200, 200, 429]
 --- response_body_like eval
-    ["hello.*", ""]
+    ["hello.*", "hello.*", ""]
