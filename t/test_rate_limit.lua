@@ -25,7 +25,7 @@ __DATA__
 --- config
     set $max_hits 2;
     set $throttle_time 10;
-    set $script '../../lib/access.lua';
+    set $script '../../lib/rate_limit.lua';
     access_by_lua_file $script;
 
     location /hello {
