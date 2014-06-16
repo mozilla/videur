@@ -3,4 +3,4 @@ build:
 
 test:
 	- pkill -9 nginx
-	prove -r t
+	prove -r t/*.lua
