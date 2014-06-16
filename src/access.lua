@@ -1,7 +1,7 @@
 --
 -- To get this working you need to add the following in your
 -- Nginx configuration
--- 
+--
 --  http {
 --     lua_shared_dict  stats   10M;
 --     server {
