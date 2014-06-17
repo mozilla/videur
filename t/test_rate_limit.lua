@@ -10,7 +10,8 @@ plan tests => repeat_each() * blocks() * 6;
 my $pwd = cwd();
 
 our $HttpConfig = qq{
-	lua_shared_dict stats 100k;
+  lua_package_path "$pwd/lib/?.lua;;";
+  lua_shared_dict stats 100k;
 };
 
 
