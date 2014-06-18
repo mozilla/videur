@@ -1,11 +1,14 @@
 build:
-	cpan install Test::Nginx
+	virtualenv --no-site-packages .
+	bin/pip install git+git://github.com/tarekziade/NginxTest
+	bin/pip install nose
+	bin/pip install webtest
+	bin/pip install WSGProxy2
 	luarocks install lapis
 	luarocks install etlua
 
 export PATH := ./lib:$(PATH)
 
 test:
-	- pkill -9 nginx
 	export PATH
-	prove -r t/*.lua
+	bin/nosetests -sv tests
