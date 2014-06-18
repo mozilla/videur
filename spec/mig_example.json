@@ -53,8 +53,8 @@
                 "hsts": {
                     "enabled": true,
                     "max-age": 15768000
-                },
-            }
+                }
+            },
             "content security policy": {
                 "enabled": true,
                 "Content-Security-Policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports"
