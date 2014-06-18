@@ -33,6 +33,7 @@
                     "limits": {
                         "request rate": "1/s/ip",
                         "max req size": "10kB"
+                    }
                 }
             }
         },
@@ -51,10 +52,24 @@
                 "enabled": true,
                 "must-staple": 7776000
             },
+            "content security policy": {
+                "enabled": true,
+                "Content-Security-Policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports"
+            },
             "limits": {
                 "request rate": "10/s/ip",
                 "bandwidth rate": "5kB/s/conn",
-                "max req size": "500B"
+                "max req size": "500B",
+                "permitted origins": [
+                    "france",
+                    "usa",
+                    "uk"
+                ],
+                "ip whitelist": [],
+                "ip blacklist": []
+            },
+            "logging": {
+                "location": "amqps://mozdef.mozilla.org/mig/"
             }
         }
     }
