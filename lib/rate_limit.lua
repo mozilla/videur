@@ -11,8 +11,8 @@
 --
 
 -- load the config
-local max_hits = tonumber(ngx.var.max_hits) + 1;
-local throttle_time = tonumber(ngx.var.throttle_time);
+local max_hits = tonumber(ngx.var.max_hits) + 1
+local throttle_time = tonumber(ngx.var.throttle_time)
 
 -- how many hits we got on this IP ?
 local stats = ngx.shared.stats
@@ -25,9 +25,11 @@ else
   hits = hits + 1
   stats:set(remote_ip, hits, throttle_time)
   if hits >= max_hits then
-    -- 429 - Too many requests
-    ngx.exit(429);
+    ngx.status = 429
+    ngx.header.content_type = 'text/plain; charset=us-ascii'
+    ngx.print("Rate limit exceeded.")
+    return ngx.exit(429)
   end
 end
 
-ngx.exit(ngx.OK);
+return ngx.exit(ngx.OK)
