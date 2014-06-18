@@ -1,0 +1,61 @@
+{
+    "service": {
+        "location": "https://api.mig.mozilla.org/api/v1",
+        "resources": {
+            "GET": {
+                "/dashboard": {},
+                "/action": {
+                    "parameters": {
+                        "actionid": "/^[0-9]{1,20}$/"
+                    }
+                },
+                "/command": {
+                    "parameters": {
+                        "commandid": "/^[0-9]{1,20}$/"
+                    }
+                },
+                "/search": {
+                    "parameters": {
+                        "before": "rfc3339date",
+                        "after": "rfc3339date",
+                        "type": "/^(action|command|agent)$/",
+                        "report": "/^[a-zA-Z0-9]{1,64}$/",
+                        "agentname": "/^[\\w\\n\\r\\t ]{0,256}$",
+                        "actionname": "/^[\\w\\n\\r\\t ]{0,1024}$",
+                        "status": "/^[a-zA-Z0-9]{1,64}$/",
+                        "threatfamily": "/^[a-zA-Z0-9]{1,64}$/",
+                        "limit": "/^[0-9]{1,20}$/"
+                    }
+                }
+            },
+            "POST": {
+                "/action/create": {
+                    "limits": {
+                        "request rate": "1/s/ip",
+                        "max req size": "10kB"
+                }
+            }
+        },
+        "description": {
+            "owner": "Mozilla Operations Security",
+            "developer": "Julien Vehent <jvehent@mozilla.com>",
+            "operator": "Julien Vehent <jvehent@mozilla.com>"
+        },
+        "configuration": {
+            "authentication": "fxa assertion",
+            "hsts": {
+                "enabled": true,
+                "max-age": 15768000
+            },
+            "ocsp stapling": {
+                "enabled": true,
+                "must-staple": 7776000
+            },
+            "limits": {
+                "request rate": "10/s/ip",
+                "bandwidth rate": "5kB/s/conn",
+                "max req size": "500B"
+            }
+        }
+    }
+}
