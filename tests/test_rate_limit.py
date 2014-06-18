@@ -1,5 +1,7 @@
 import os
 import unittest
+import time
+
 from webtest import TestApp
 from nginxtest.server import NginxServer
 
@@ -17,7 +19,7 @@ _HTTP_OPTIONS = """\
 
 _SERVER_OPTIONS = """\
   set $max_hits 4;
-  set $throttle_time 10;
+  set $throttle_time 0.3;
   access_by_lua_file '%s/rate_limit.lua';
 """ % LIBDIR
 
@@ -39,6 +41,15 @@ class TestMyNginx(unittest.TestCase):
         self.nginx.stop()
 
     def test_rate(self):
+        # the 3rd call should be returning a 429
         self.app.get('/hello', status=200)
         self.app.get('/hello', status=200)
         self.app.get('/world', status=429)
+
+    def test_rate2(self):
+        # the 3rd call should be returning a 200
+        # because the blacklist is ttled
+        self.app.get('/hello', status=200)
+        self.app.get('/hello', status=200)
+        time.sleep(.4)
+        self.app.get('/world', status=200)
