@@ -14,6 +14,19 @@ our $HttpConfig = qq{
   lua_shared_dict stats 100k;
 };
 
+our $Config = qq{
+  set \$max_hits 2;
+  set \$throttle_time 10;
+  access_by_lua_file '$pwd/lib/rate_limit.lua';
+
+  location /hello {
+    echo "hello";
+  }
+
+  location /world {
+    echo "world";
+  }
+};
 
 no_long_string();
 no_shuffle();
@@ -23,20 +36,7 @@ __DATA__
 
 === TEST 1: The third call should return a 429
 --- http_config eval: $::HttpConfig
---- config
-    set $max_hits 2;
-    set $throttle_time 10;
-    set $script '../../lib/rate_limit.lua';
-    access_by_lua_file $script;
-
-    location /hello {
-        echo "hello";
-    }
-
-    location /world {
-        echo "world";
-    }
-
+--- config eval: $::Config
 --- request eval
     ["GET /hello", "GET /hello", "GET /world"]
 --- error_code eval
