@@ -1,6 +1,7 @@
 {
     "service": {
         "location": "https://api.mig.mozilla.org/api/v1",
+        "version": "1.1",
         "resources": {
             "GET": {
                 "/dashboard": {},
@@ -31,8 +32,8 @@
             "POST": {
                 "/action/create": {
                     "limits": {
-                        "request rate": "1/s/ip",
-                        "max req size": "10kB"
+                        "request_rate": "1/s/ip",
+                        "max_req_size": "10kB"
                     }
                 }
             }
@@ -45,8 +46,8 @@
         "configuration": {
             "authentication": "fxa assertion",
             "tls": {
-                "require backward compatibility": false,
-                "ocsp stapling": {
+                "require_backward_compatibility": false,
+                "ocsp_stapling": {
                     "enabled": true,
                     "must-staple": 7776000
                 },
@@ -60,10 +61,10 @@
                 "Content-Security-Policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports"
             },
             "limits": {
-                "request rate": "10/s/ip",
-                "bandwidth rate": "5kB/s/conn",
-                "max req size": "500B",
-                "permitted origins": [
+                "request_rate": "10/s/ip",
+                "bandwidth_rate": "5kB/s/conn",
+                "max_req_size": "500B",
+                "permitted_origins": [
                     "france",
                     "usa",
                     "uk"
