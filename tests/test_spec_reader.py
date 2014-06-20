@@ -41,7 +41,9 @@ class TestMyNginx(unittest.TestCase):
         shutil.copy(SPEC_FILE, target)
         self._p = subprocess.Popen([sys.executable, '-m',
                                     'SimpleHTTPServer', '8282'],
-                                    cwd=self.serv_dir)
+                                    cwd=self.serv_dir,
+                                    stderr=subprocess.PIPE,
+                                    stdout=subprocess.PIPE)
         start = time.time()
         res = None
         while time.time() - start < 2:
