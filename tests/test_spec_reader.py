@@ -42,11 +42,17 @@ class TestMyNginx(unittest.TestCase):
         self._p = subprocess.Popen([sys.executable, '-m',
                                     'SimpleHTTPServer', '8282'],
                                     cwd=self.serv_dir)
-        try:
-            while not requests.get('http://127.0.0.1:8282'):
+        start = time.time()
+        res = None
+        while time.time() - start < 2:
+            try:
+                res = requests.get('http://127.0.0.1:8282/api-specs')
+                break
+            except requests.ConnectionError:
                 time.sleep(.1)
-        except requests.ConnectionError:
-            pass
+        if res is None:
+            self._kill_python_server()
+            raise IOError("Could not start the Py server")
 
         try:
             self.nginx = NginxServer(http_options=_HTTP_OPTIONS,
