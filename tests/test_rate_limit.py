@@ -35,7 +35,7 @@ class TestMyNginx(unittest.TestCase):
                                  server_options=_SERVER_OPTIONS)
         self.nginx.start()
         # see https://github.com/openresty/lua-nginx-module/issues/379
-        self.app = TestApp(self.nginx.root_url, lint=False)
+        self.app = TestApp(self.nginx.root_url, lint=True)
 
     def tearDown(self):
         self.nginx.stop()
@@ -44,7 +44,7 @@ class TestMyNginx(unittest.TestCase):
         # the 3rd call should be returning a 429
         self.app.get('/hello', status=200)
         self.app.get('/hello', status=200)
-        self.app.get('/world', status=429)
+        self.app.get('/world', status=404)
 
     def test_rate2(self):
         # the 3rd call should be returning a 200

@@ -25,10 +25,10 @@ else
   hits = hits + 1
   stats:set(remote_ip, hits, throttle_time)
   if hits >= max_hits then
-    ngx.status = 429
+    ngx.status = 404
     ngx.header.content_type = 'text/plain; charset=us-ascii'
     ngx.print("Rate limit exceeded.")
-    return ngx.exit(429)
+    ngx.exit(ngx.HTTP_OK)
   end
 end
 

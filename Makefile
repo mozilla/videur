@@ -6,6 +6,9 @@ build:
 	bin/pip install WSGProxy2
 	luarocks install lapis
 	luarocks install etlua
+	luarocks install luasec
+	luarocks install lua-resty-http
+	luarocks install cjson
 
 export PATH := ./lib:$(PATH)
 
