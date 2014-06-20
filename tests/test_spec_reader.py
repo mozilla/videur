@@ -24,10 +24,12 @@ _HTTP_OPTIONS = """\
 
 _SERVER_OPTIONS = """\
   set $spec_url "http://localhost:8282/api-specs";
+  set $target "";
   access_by_lua_file '%s/dynamic_proxy_pass.lua';
 """ % LIBDIR
 
 
+_LOCATION = "proxy_pass $target;"
 SPEC_FILE = os.path.join(os.path.dirname(__file__),
                          '..', 'spec', 'mig_example.json')
 
@@ -39,6 +41,11 @@ class TestMyNginx(unittest.TestCase):
         self.serv_dir = tempfile.mkdtemp()
         target = os.path.join(self.serv_dir, 'api-specs')
         shutil.copy(SPEC_FILE, target)
+
+        # and lets add some pages
+        with open(os.path.join(self.serv_dir, 'dashboard'), 'w') as f:
+            f.write('yeah')
+
         self._p = subprocess.Popen([sys.executable, '-m',
                                     'SimpleHTTPServer', '8282'],
                                     cwd=self.serv_dir,
@@ -57,7 +64,9 @@ class TestMyNginx(unittest.TestCase):
             raise IOError("Could not start the Py server")
 
         try:
-            self.nginx = NginxServer(http_options=_HTTP_OPTIONS,
+            self.nginx = NginxServer(locations=[{'path': '/',
+                                                 'definition': _LOCATION}],
+                                     http_options=_HTTP_OPTIONS,
                                      server_options=_SERVER_OPTIONS)
             self.nginx.start()
         except Exception:
@@ -78,4 +87,6 @@ class TestMyNginx(unittest.TestCase):
         self.nginx.stop()
 
     def test_routing(self):
-        self.app.get('/dashboard', headers={'User-Agent': 'Me'}, status=200)
+        res = self.app.get('/dashboard', headers={'User-Agent': 'Me'},
+                           status=200)
+        self.assertEqual(res.body, 'yeah')

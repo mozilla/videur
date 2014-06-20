@@ -1,21 +1,25 @@
 {
     "service": {
-        "location": "https://api.mig.mozilla.org/api/v1",
+        "location": "http://127.0.0.1:8282",
         "version": "1.1",
         "resources": {
-            "GET": {
-                "/dashboard": {},
+                "/dashboard": {
+                  "GET": {}
+                },
                 "/action": {
+                 "GET": {
                     "parameters": {
                         "actionid": "/^[0-9]{1,20}$/"
-                    }
+                    }}
                 },
                 "/command": {
+                 "GET": {
                     "parameters": {
                         "commandid": "/^[0-9]{1,20}$/"
-                    }
+                    }}
                 },
                 "/search": {
+                 "GET": {
                     "parameters": {
                         "before": "rfc3339date",
                         "after": "rfc3339date",
@@ -26,17 +30,16 @@
                         "status": "/^[a-zA-Z0-9]{1,64}$/",
                         "threatfamily": "/^[a-zA-Z0-9]{1,64}$/",
                         "limit": "/^[0-9]{1,20}$/"
-                    }
+                    }}
                 }
-            },
-            "POST": {
+            ,
                 "/action/create": {
+                 "POST": {
                     "limits": {
                         "request_rate": "1/s/ip",
                         "max_req_size": "10kB"
-                    }
+                    }}
                 }
-            }
         },
         "description": {
             "owner": "Mozilla Operations Security",
