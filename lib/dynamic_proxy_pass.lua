@@ -1,52 +1,18 @@
 -- reads the proxy server specs to generate the actual routing
 -- rejects anything that's not
 local cjson = require "cjson"
-local http = require "resty.http"
 local rex = require "rex_posix"
+local util = require "_util"
+
 
 local key = ngx.var.http_user_agent
 if not key then
-    ngx.log(ngx.ERR, "no user-agent found")
-    return ngx.exit(400)
+    return bad_request("no user-agent found")
 end
 
 local spec_url = ngx.var.spec_url
 local cached_spec = ngx.shared.cached_spec
 local last_updated = cached_spec:get("last-updated")
-
-
-local function bad_request(message)
-    ngx.status = 400
-    ngx.say(message)
-    return ngx.exit(ngx.HTTP_OK)
-end
-
---
---  reads an url synchronously
---
-local function get_body(host, port, path)
-    local hc = http:new()
-    hc:set_timeout(1000)
-    ok, err = hc:connect(host, port)
-    if not ok then
-        ngx.say("failed to connect: ", err)
-        return ''
-    end
-
-    local res, err = hc:request({ path = path })
-    if not res then
-        ngx.say("failed to retrieve: ", err)
-        return ''
-    end
-
-    local body = res:read_body()
-    local ok, err = hc:close()
-    if not ok then
-      ngx.say("failed to close: ", err)
-    end
-
-    return body
-end
 
 -- update the spec if needed
 -- TODO: add a Last-Modified header + check every 5mn maybe
@@ -56,7 +22,7 @@ local body, location, version, resources = nil
 if true then
    --if not last_updated then
     -- we need to load it from the backend
-    body = get_body("127.0.0.1", 8282, "/api-specs")
+    body = util.fetch_http_body("127.0.0.1", 8282, "/api-specs")
     cached_spec:set("raw_body", body)
     body = cjson.decode(body)    -- todo catch parse error
 
@@ -101,11 +67,11 @@ if method == 'GET' then
        if constraint then
            if not rex.match(val, constraint) then
              -- the value does not match the constraints
-             return bad_request("Field does not match " .. key)
+             return util.bad_request("Field does not match " .. key)
            end
        else
            -- this field was not declared
-           return bad_request("Unknown field " .. key)
+           return util.bad_request("Unknown field " .. key)
        end
     end
 end

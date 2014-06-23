@@ -1,4 +1,5 @@
 local etlua = require "etlua"
+local http = require "resty.http"
 
 
 function get_dirname()
@@ -36,9 +37,44 @@ function capture_errors(func)
 end
 
 
+function bad_request(message)
+    ngx.status = 400
+    ngx.say(message)
+    return ngx.exit(ngx.HTTP_OK)
+end
+
+
+function fetch_http_body(host, port, path)
+    local hc = http:new()
+    hc:set_timeout(1000)
+    ok, err = hc:connect(host, port)
+    if not ok then
+        ngx.say("failed to connect: ", err)
+        return ''
+    end
+
+    local res, err = hc:request({ path = path })
+    if not res then
+        ngx.say("failed to retrieve: ", err)
+        return ''
+    end
+
+    local body = res:read_body()
+    local ok, err = hc:close()
+    if not ok then
+      ngx.say("failed to close: ", err)
+    end
+
+    return body
+end
+
+
+
 -- public interface
 return {
   render_template = render_template,
   load_template = load_template,
-  capture_errors = capture_errors
+  capture_errors = capture_errors,
+  bad_request = bad_request,
+  fetch_http_body = fetch_http_body
 }
