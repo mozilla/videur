@@ -90,3 +90,7 @@ class TestMyNginx(unittest.TestCase):
         res = self.app.get('/dashboard', headers={'User-Agent': 'Me'},
                            status=200)
         self.assertEqual(res.body, 'yeah')
+
+    def test_reject_bad_param(self):
+        self.app.get('/dashboard?ok=no', headers={'User-Agent': 'Me'},
+                     status=400)
