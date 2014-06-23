@@ -1,5 +1,6 @@
 local etlua = require "etlua"
 local http = require "resty.http"
+local _url = require "url"
 
 
 function get_dirname()
@@ -44,8 +45,13 @@ function bad_request(message)
 end
 
 
-function fetch_http_body(host, port, path)
+function fetch_http_body(url)
+    url = _url.parse(url)
+    local host = url.host
+    local path = url.path
+    local port = url.port
     local hc = http:new()
+
     hc:set_timeout(1000)
     ok, err = hc:connect(host, port)
     if not ok then
