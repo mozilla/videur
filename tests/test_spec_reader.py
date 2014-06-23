@@ -23,7 +23,7 @@ _HTTP_OPTIONS = """\
 
 
 _SERVER_OPTIONS = """\
-  set $spec_url "http://localhost:8282/api-specs";
+  set $spec_url "http://127.0.0.1:8282/api-specs";
   set $target "";
   access_by_lua_file '%s/dynamic_proxy_pass.lua';
 """ % LIBDIR

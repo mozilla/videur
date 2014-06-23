@@ -10,7 +10,7 @@ if not key then
     return bad_request("no user-agent found")
 end
 
-local spec_url = ngx.var.spec_url
+local spec_url = ngx.var.spec_url or "http://127.0.0.1:8282/api-specs"
 local cached_spec = ngx.shared.cached_spec
 local last_updated = cached_spec:get("last-updated")
 
@@ -23,7 +23,7 @@ local body, location, version, resources = nil
 -- TODO: we need a way to invalidate the cache
 if not last_updated then
     -- we need to load it from the backend
-    body = util.fetch_http_body("http://127.0.0.1:8282/api-specs")
+    body = util.fetch_http_body(spec_url)
     cached_spec:set("raw_body", body)
     body = cjson.decode(body)    -- todo catch parse error
 
