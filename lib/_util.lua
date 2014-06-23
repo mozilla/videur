@@ -75,6 +75,14 @@ function fetch_http_body(url)
 end
 
 
+function Keys(list)
+  local keys = {}
+  for k, _ in pairs(list) do
+    keys[k] = true
+  end
+  return keys
+end
+
 
 -- public interface
 return {
@@ -82,5 +90,6 @@ return {
   load_template = load_template,
   capture_errors = capture_errors,
   bad_request = bad_request,
-  fetch_http_body = fetch_http_body
+  fetch_http_body = fetch_http_body,
+  Keys = Keys
 }

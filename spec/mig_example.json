@@ -12,7 +12,7 @@
                         "actionid": {
                           "validation": "[0-9]{1,20}",
                           "required": true
-                     }
+                       }
                     }}
                 },
                 "/command": {
@@ -57,7 +57,6 @@
                           "required": true
                          },
 
-
                         "status": {
                           "validation":"[a-zA-Z0-9]{1,64}",
                           "required": true
@@ -68,7 +67,6 @@
                           "validation":"[a-zA-Z0-9]{1,64}",
                           "required": true
                          },
-
 
                         "limit": {
                           "validation":"[0-9]{1,20}",

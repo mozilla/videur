@@ -96,9 +96,21 @@ class TestMyNginx(unittest.TestCase):
         self.app.get('/dashboard?ok=no', headers={'User-Agent': 'Me'},
                      status=400)
 
+    def test_reject_missing_option(self):
+        r = self.app.get('/action',
+                         headers={'User-Agent': 'Me'},
+                         status=400)
+        self.assertEqual(r.body, 'Missing actionid\n')
+
     def test_reject_bad_arg(self):
         # make sure we just accept integers
-        self.app.get('/action?actionid=no', headers={'User-Agent': 'Me'},
+        self.app.get('/action',
+                     params={'actionid': 'no'},
+                     headers={'User-Agent': 'Me'},
                      status=400)
-        self.app.get('/action?actionid=1234', headers={'User-Agent': 'Me'},
-                     status=200)
+
+        r = self.app.get('/action',
+                        params={'actionid': '1234'},
+                        headers={'User-Agent': 'Me'},
+                        status=200)
+        self.assertEqual(r.body, 'yeah')

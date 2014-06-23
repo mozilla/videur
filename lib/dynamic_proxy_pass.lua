@@ -1,9 +1,9 @@
+
 -- reads the proxy server specs to generate the actual routing
 -- rejects anything that's not
 local cjson = require "cjson"
 local rex = require "rex_posix"
 local util = require "_util"
-
 
 local key = ngx.var.http_user_agent
 if not key then
@@ -34,8 +34,8 @@ if not last_updated then
     version = service.version
     cached_spec:set('version', service.version)
     for location, desc in pairs(service.resources) do
-      for verb, def in  pairs(desc) do
-        local params = cjson.encode(def.parameters)
+      for verb, def in pairs(desc) do
+        local params = cjson.encode(def.parameters or {})
         cached_spec:set(verb .. ":" .. location, params)
       end
     end
@@ -65,6 +65,17 @@ end
 if method == 'GET' then
     local params = cjson.decode(cached_value)
     local args = ngx.req.get_uri_args()
+
+    -- let's check if we have all required args first
+    local provided_args = util.Keys(args)
+
+    for key, value in pairs(params) do
+        if value.required and not provided_args[key] then
+            return util.bad_request("Missing " .. key)
+        end
+    end
+
+    -- now let's validate the args we got
     for key, val in pairs(args) do
        local constraint = params[key]
        if constraint then
@@ -79,7 +90,8 @@ if method == 'GET' then
            return util.bad_request("Unknown field " .. key)
        end
     end
-end
+end -- end if GET
+
 
 -- set the proxy_pass value
 ngx.var.target = location
