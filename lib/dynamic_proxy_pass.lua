@@ -19,8 +19,7 @@ local last_updated = cached_spec:get("last-updated")
 -- TODO: make sure it gets reloaded on sighup
 local body, location, version, resources = nil
 
-if true then
-   --if not last_updated then
+if not last_updated then
     -- we need to load it from the backend
     body = util.fetch_http_body("127.0.0.1", 8282, "/api-specs")
     cached_spec:set("raw_body", body)
@@ -40,6 +39,8 @@ if true then
     end
     last_updated = os.time()
     cached_spec:set("last-updated", last_updated)
+else
+    location = cached_spec:get('location')
 end
 
 -- now let's see if we have a match
