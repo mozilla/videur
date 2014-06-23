@@ -19,6 +19,8 @@ local last_updated = cached_spec:get("last-updated")
 -- TODO: make sure it gets reloaded on sighup
 local body, location, version, resources = nil
 
+
+-- TODO: we need a way to invalidate the cache
 if not last_updated then
     -- we need to load it from the backend
     body = util.fetch_http_body("127.0.0.1", 8282, "/api-specs")
