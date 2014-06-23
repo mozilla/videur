@@ -9,27 +9,71 @@
                 "/action": {
                  "GET": {
                     "parameters": {
-                        "actionid": "[0-9]{1,20}"
+                        "actionid": {
+                          "validation": "[0-9]{1,20}",
+                          "required": true
+                     }
                     }}
                 },
                 "/command": {
                  "GET": {
                     "parameters": {
-                        "commandid": "[0-9]{1,20}"
+                        "commandid": {
+                          "validation": "[0-9]{1,20}",
+                          "required": true
+                       }
                     }}
                 },
                 "/search": {
                  "GET": {
                     "parameters": {
-                        "before": "rfc3339date",
-                        "after": "([0-9]{4})-([0-9]{2})-([0-9]{2})([Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]+)?)?(([Zz]|([+-])([0-9]{2}):([0-9]{2})))?",
-                        "type": "(action|command|agent)",
-                        "report": "[a-zA-Z0-9]{1,64}",
-                        "agentname": "[\\w\\n\\r\\t ]{0,256}",
-                        "actionname": "[\\w\\n\\r\\t ]{0,1024}",
-                        "status": "[a-zA-Z0-9]{1,64}",
-                        "threatfamily": "[a-zA-Z0-9]{1,64}",
-                        "limit": "[0-9]{1,20}"
+                        "before": {
+                          "validation":"rfc3339date",
+                          "required": true
+                         },
+
+                        "after": {
+                          "validation":"([0-9]{4})-([0-9]{2})-([0-9]{2})([Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]+)?)?(([Zz]|([+-])([0-9]{2}):([0-9]{2})))?",
+                          "required": true
+                         },
+
+                        "type": {
+                          "validation":"(action|command|agent)",
+                          "required": true
+                         },
+
+                        "report": {
+                          "validation":"[a-zA-Z0-9]{1,64}",
+                          "required": true
+                         },
+
+                        "agentname": {
+                          "validation":"[\\w\\n\\r\\t ]{0,256}",
+                          "required": true
+                         },
+
+                        "actionname": {
+                          "validation":"[\\w\\n\\r\\t ]{0,1024}",
+                          "required": true
+                         },
+
+
+                        "status": {
+                          "validation":"[a-zA-Z0-9]{1,64}",
+                          "required": true
+                         },
+
+
+                        "threatfamily": {
+                          "validation":"[a-zA-Z0-9]{1,64}",
+                          "required": true
+                         },
+
+
+                        "limit": {
+                          "validation":"[0-9]{1,20}",
+                          "required": true
+                         }
                     }}
                 }
             ,

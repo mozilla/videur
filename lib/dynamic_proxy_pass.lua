@@ -68,9 +68,11 @@ if method == 'GET' then
     for key, val in pairs(args) do
        local constraint = params[key]
        if constraint then
-           if not rex.match(val, constraint) then
-             -- the value does not match the constraints
-             return util.bad_request("Field does not match " .. key)
+           if constraint['validation'] then
+               if not rex.match(val, constraint['validation']) then
+                 -- the value does not match the constraints
+                 return util.bad_request("Field does not match " .. key)
+               end
            end
        else
            -- this field was not declared
