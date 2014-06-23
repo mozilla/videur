@@ -9,6 +9,7 @@ build:
 	luarocks install luasec
 	luarocks install lua-resty-http
 	luarocks install cjson
+	luarocks install lrexlib-posix
 
 export PATH := ./lib:$(PATH)
 

@@ -9,7 +9,7 @@
                 "/action": {
                  "GET": {
                     "parameters": {
-                        "actionid": "/^[0-9]{1,20}$/"
+                        "actionid": "[0-9]{1,20}"
                     }}
                 },
                 "/command": {

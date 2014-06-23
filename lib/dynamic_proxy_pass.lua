@@ -2,6 +2,7 @@
 -- rejects anything that's not
 local cjson = require "cjson"
 local http = require "resty.http"
+local rex = require "rex_posix"
 
 local key = ngx.var.http_user_agent
 if not key then
@@ -98,7 +99,7 @@ if method == 'GET' then
     for key, val in pairs(args) do
        local constraint = params[key]
        if constraint then
-           if not string.find(value, constraint) then
+           if not rex.match(val, constraint) then
              -- the value does not match the constraints
              return bad_request("Field does not match " .. key)
            end

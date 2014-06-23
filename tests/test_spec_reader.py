@@ -43,8 +43,9 @@ class TestMyNginx(unittest.TestCase):
         shutil.copy(SPEC_FILE, target)
 
         # and lets add some pages
-        with open(os.path.join(self.serv_dir, 'dashboard'), 'w') as f:
-            f.write('yeah')
+        for page in ('dashboard', 'action'):
+            with open(os.path.join(self.serv_dir, page), 'w') as f:
+                f.write('yeah')
 
         self._p = subprocess.Popen([sys.executable, '-m',
                                     'SimpleHTTPServer', '8282'],
@@ -91,6 +92,13 @@ class TestMyNginx(unittest.TestCase):
                            status=200)
         self.assertEqual(res.body, 'yeah')
 
-    def test_reject_bad_param(self):
+    def test_reject_unknown_arg(self):
         self.app.get('/dashboard?ok=no', headers={'User-Agent': 'Me'},
                      status=400)
+
+    def test_reject_bad_arg(self):
+        # make sure we just accept integers
+        self.app.get('/action?actionid=no', headers={'User-Agent': 'Me'},
+                     status=400)
+        self.app.get('/action?actionid=1234', headers={'User-Agent': 'Me'},
+                     status=200)
