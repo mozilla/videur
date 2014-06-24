@@ -10,7 +10,7 @@
                  "GET": {
                     "parameters": {
                         "actionid": {
-                          "validation": "[0-9]{1,20}",
+                          "validation": "digits:1,20",
                           "required": true
                        }
                     }}
@@ -19,7 +19,7 @@
                  "GET": {
                     "parameters": {
                         "commandid": {
-                          "validation": "[0-9]{1,20}",
+                          "validation": "regexp:[0-9]{1,20}",
                           "required": true
                        }
                     }}
@@ -28,48 +28,48 @@
                  "GET": {
                     "parameters": {
                         "before": {
-                          "validation":"rfc3339date",
+                          "validation":"RFC3339",
                           "required": true
                          },
 
                         "after": {
-                          "validation":"([0-9]{4})-([0-9]{2})-([0-9]{2})([Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]+)?)?(([Zz]|([+-])([0-9]{2}):([0-9]{2})))?",
+                          "validation":"regexp:([0-9]{4})-([0-9]{2})-([0-9]{2})([Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]+)?)?(([Zz]|([+-])([0-9]{2}):([0-9]{2})))?",
                           "required": true
                          },
 
                         "type": {
-                          "validation":"(action|command|agent)",
+                          "validation":"values:action|command|agent",
                           "required": true
                          },
 
                         "report": {
-                          "validation":"[a-zA-Z0-9]{1,64}",
+                          "validation":"regexp:[a-zA-Z0-9]{1,64}",
                           "required": true
                          },
 
                         "agentname": {
-                          "validation":"[\\w\\n\\r\\t ]{0,256}",
+                          "validation":"regexp:[\\w\\n\\r\\t ]{0,256}",
                           "required": true
                          },
 
                         "actionname": {
-                          "validation":"[\\w\\n\\r\\t ]{0,1024}",
+                          "validation":"regexp:[\\w\\n\\r\\t ]{0,1024}",
                           "required": true
                          },
 
                         "status": {
-                          "validation":"[a-zA-Z0-9]{1,64}",
+                          "validation":"regexp:[a-zA-Z0-9]{1,64}",
                           "required": true
                          },
 
 
                         "threatfamily": {
-                          "validation":"[a-zA-Z0-9]{1,64}",
+                          "validation":"regexp:[a-zA-Z0-9]{1,64}",
                           "required": true
                          },
 
                         "limit": {
-                          "validation":"[0-9]{1,20}",
+                          "validation":"digits:1,20",
                           "required": true
                          }
                     }}

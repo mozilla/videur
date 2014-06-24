@@ -4,8 +4,6 @@
 local cjson = require "cjson"
 local rex = require "rex_posix"
 local util = require "_util"
-
-
 local cached_spec = ngx.shared.cached_spec
 
 
@@ -82,15 +80,31 @@ function match()
         end
 
         -- now let's validate the args we got
+        -- TODO: we should build all those regexps when we read the spec file
+        -- and have them loaded in the cache so we don't
+        -- do it again
         for key, val in pairs(args) do
-        local constraint = params[key]
-        if constraint then
-            if constraint['validation'] then
-                if not rex.match(val, constraint['validation']) then
-                    -- the value does not match the constraints
-                    return util.bad_request("Field does not match " .. key)
+            local constraint = params[key]
+            if constraint then
+                if constraint['validation'] then
+                    local validation = constraint['validation']
+                    local t, v = validation:match('(%a+):(.*)')
+                    if t == 'regexp' then
+                        if not rex.match(val, v) then
+                            -- the value does not match the constraints
+                            return util.bad_request("Field does not match " .. key)
+                        end
+                    elseif t == 'digits' then
+                        local pattern = '[0-9]{' .. v .. '}'
+                        if not rex.match(val, pattern) then
+                            -- the value does not match the constraints
+                            return util.bad_request("Field does not match " .. key)
+                        end
+                    else
+                        -- XXX should be detected at indexing time
+                        return util.bad_request("Bad rule " .. v)
+                    end
                 end
-            end
         else
             -- this field was not declared
             return util.bad_request("Unknown field " .. key)
@@ -103,6 +117,8 @@ end
 
 
 -- main code
+-- TODO make this a lib so we can use it with other
+-- filters
 
 -- abort if we don't have any use agent
 local key = ngx.var.http_user_agent
@@ -113,3 +129,4 @@ end
 -- set the proxy_pass value by matching
 -- the request against the api specs
 ngx.var.target = match()
+
