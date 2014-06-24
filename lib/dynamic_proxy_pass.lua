@@ -32,10 +32,10 @@ function get_location()
         version = service.version
         cached_spec:set('version', service.version)
         for location, desc in pairs(service.resources) do
-        for verb, def in pairs(desc) do
-            local params = cjson.encode(def.parameters or {})
-            cached_spec:set(verb .. ":" .. location, params)
-        end
+            for verb, def in pairs(desc) do
+                local params = cjson.encode(def.parameters or {})
+                cached_spec:set(verb .. ":" .. location, params)
+            end
         end
         last_updated = os.time()
         cached_spec:set("last-updated", last_updated)
