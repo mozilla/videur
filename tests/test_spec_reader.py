@@ -43,7 +43,7 @@ class TestMyNginx(unittest.TestCase):
         shutil.copy(SPEC_FILE, target)
 
         # and lets add some pages
-        for page in ('dashboard', 'action'):
+        for page in ('dashboard', 'action', 'search'):
             with open(os.path.join(self.serv_dir, page), 'w') as f:
                 f.write('yeah')
 
@@ -114,3 +114,19 @@ class TestMyNginx(unittest.TestCase):
                         headers={'User-Agent': 'Me'},
                         status=200)
         self.assertEqual(r.body, 'yeah')
+
+    def test_values(self):
+        # make sure we just accept some values
+        self.app.get('/search',
+                     params={'type': 'meh'},
+                     headers={'User-Agent': 'Me'},
+                     status=400)
+
+        for value in ('action', 'command', 'agent'):
+            r = self.app.get('/search',
+                            params={'type': value},
+                            headers={'User-Agent': 'Me'},
+                            status=200)
+            self.assertEqual(r.body, 'yeah')
+
+

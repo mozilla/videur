@@ -100,6 +100,12 @@ function match()
                             -- the value does not match the constraints
                             return util.bad_request("Field does not match " .. key)
                         end
+                    elseif t == 'values' then
+                        local pattern = '(' .. v .. ')'
+                        if not rex.match(val, pattern) then
+                            -- the value does not match the constraints
+                            return util.bad_request("Field does not match " .. key)
+                        end
                     else
                         -- XXX should be detected at indexing time
                         return util.bad_request("Bad rule " .. v)

@@ -29,48 +29,47 @@
                     "parameters": {
                         "before": {
                           "validation":"RFC3339",
-                          "required": true
+                          "required": false
                          },
 
                         "after": {
                           "validation":"regexp:([0-9]{4})-([0-9]{2})-([0-9]{2})([Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]+)?)?(([Zz]|([+-])([0-9]{2}):([0-9]{2})))?",
-                          "required": true
+                          "required": false
                          },
 
                         "type": {
                           "validation":"values:action|command|agent",
-                          "required": true
+                          "required": false
                          },
 
                         "report": {
                           "validation":"regexp:[a-zA-Z0-9]{1,64}",
-                          "required": true
+                          "required": false
                          },
 
                         "agentname": {
                           "validation":"regexp:[\\w\\n\\r\\t ]{0,256}",
-                          "required": true
+                          "required": false
                          },
 
                         "actionname": {
                           "validation":"regexp:[\\w\\n\\r\\t ]{0,1024}",
-                          "required": true
+                          "required": false
                          },
 
                         "status": {
                           "validation":"regexp:[a-zA-Z0-9]{1,64}",
-                          "required": true
+                          "required": false
                          },
-
 
                         "threatfamily": {
                           "validation":"regexp:[a-zA-Z0-9]{1,64}",
-                          "required": true
+                          "required": false
                          },
 
                         "limit": {
                           "validation":"digits:1,20",
-                          "required": true
+                          "required": false
                          }
                     }}
                 }
