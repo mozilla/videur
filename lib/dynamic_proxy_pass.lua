@@ -5,6 +5,7 @@ local cjson = require "cjson"
 local rex = require "rex_posix"
 local util = require "_util"
 local cached_spec = ngx.shared.cached_spec
+local date = require "date"
 
 
 function get_location()
@@ -89,6 +90,12 @@ function match()
                 if constraint['validation'] then
                     local validation = constraint['validation']
                     local t, v = validation:match('(%a+):(.*)')
+                    if not t then
+                        -- not a prefix:
+                        t = validation
+                        v = ''
+                    end
+
                     if t == 'regexp' then
                         if not rex.match(val, v) then
                             -- the value does not match the constraints
@@ -106,9 +113,13 @@ function match()
                             -- the value does not match the constraints
                             return util.bad_request("Field does not match " .. key)
                         end
+                    elseif t == 'RFC3339' then
+                        if not pcall(function() date(val) end) then
+                            return util.bad_request("Field is not RFC3339 " .. key)
+                        end
                     else
                         -- XXX should be detected at indexing time
-                        return util.bad_request("Bad rule " .. v)
+                        return util.bad_request("Bad rule " .. t)
                     end
                 end
         else

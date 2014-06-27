@@ -10,6 +10,7 @@ build:
 	luarocks install lua-resty-http
 	luarocks install cjson
 	luarocks install lrexlib-posix
+	luarocks install date
 
 export PATH := ./lib:$(PATH)
 

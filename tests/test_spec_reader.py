@@ -129,4 +129,13 @@ class TestMyNginx(unittest.TestCase):
                             status=200)
             self.assertEqual(r.body, 'yeah')
 
+    def test_date(self):
+        self.app.get('/search',
+                     params={'before': 'bad date'},
+                     headers={'User-Agent': 'Me'},
+                     status=400)
 
+        self.app.get('/search',
+                     params={'before': '2014-06-26T04:25:24Z'},
+                     headers={'User-Agent': 'Me'},
+                     status=200)
