@@ -78,7 +78,7 @@
                  "POST": {
                     "limits": {
                         "request_rate": "1/s/ip",
-                        "max_body_size": "10"
+                        "max_body_size": "10k"
                     }}
                 }
         },

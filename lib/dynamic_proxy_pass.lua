@@ -216,6 +216,7 @@ ngx.var.target, limits, params = match()
 
 -- control the body size with the general value or with the
 -- limits provided
-local max_size = tonumber(limits.max_body_size) or tonumber(ngx.var.max_body_size)
+
+local max_size = util.size2int(limits.max_body_size) or util.size2int(ngx.var.max_body_size)
 check_body_size(max_size)
 

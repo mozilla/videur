@@ -25,7 +25,7 @@ _HTTP_OPTIONS = """\
 _SERVER_OPTIONS = """\
   set $spec_url "http://127.0.0.1:8282/api-specs";
   set $target "";
-  set $max_body_size 10000;
+  set $max_body_size 1M;
   access_by_lua_file '%s/dynamic_proxy_pass.lua';
 """ % LIBDIR
 
@@ -149,6 +149,8 @@ class TestMyNginx(unittest.TestCase):
                       headers={'User-Agent': 'Me'},
                       status=501)
 
-        self.app.post('/action/create', params='data'*100,
+        # should not work because > 10k
+        data = 'data' * 10 * 1024
+        self.app.post('/action/create', params=data,
                       headers={'User-Agent': 'Me'},
                       status=413)

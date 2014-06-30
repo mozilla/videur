@@ -84,6 +84,26 @@ function Keys(list)
 end
 
 
+function size2int(size)
+    if not size then
+        return nil
+    end
+    assert(type(size) == "string", "size2int expects a string")
+    size = size:lower()
+    unit = size:sub(-1)
+    if unit == 'k' then
+        size = tonumber(size:sub(1, -2)) * 1024
+    elseif unit == 'm' then
+        size = tonumber(size:sub(1, -2)) * 1024 * 1024
+    elseif unit == 'g' then
+        size = tonumber(size:sub(1, -2)) * 1024 * 1024 * 1025
+    else
+        size = tonumber(size)
+    end
+    return size
+end
+
+
 -- public interface
 return {
   render_template = render_template,
@@ -91,5 +111,6 @@ return {
   capture_errors = capture_errors,
   bad_request = bad_request,
   fetch_http_body = fetch_http_body,
-  Keys = Keys
+  Keys = Keys,
+  size2int = size2int
 }
