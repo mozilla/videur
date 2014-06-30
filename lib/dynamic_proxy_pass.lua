@@ -47,15 +47,20 @@ end
 
 
 function check_body_size(max_body_size)
+    local content_length = tonumber(ngx.req.get_headers()['content-length'])
     local method = ngx.req.get_method()
 
-    if not method == 'POST' then
-        return
-    end
     if not max_body_size then
         return
     end
 
+    if content_length then
+        if content_length > max_body_size then
+            -- if the header says it's bigger we can drop now...
+            ngx.exit(413)
+        end
+    end
+    -- ...but we won't trust it if it says it's smaller
     local sock, err = ngx.req.socket()
     if not sock then
         if err == 'no body' then
@@ -65,7 +70,6 @@ function check_body_size(max_body_size)
         end
     end
 
-    local content_length = tonumber(ngx.req.get_headers()['content-length'])
     local chunk_size = 4096
     if content_length then
         if content_length < chunk_size then
