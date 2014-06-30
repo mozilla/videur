@@ -25,11 +25,15 @@ _HTTP_OPTIONS = """\
 _SERVER_OPTIONS = """\
   set $spec_url "http://127.0.0.1:8282/api-specs";
   set $target "";
+  set $max_body_size 10000;
   access_by_lua_file '%s/dynamic_proxy_pass.lua';
 """ % LIBDIR
 
 
-_LOCATION = "proxy_pass $target;"
+_LOCATION = """
+  proxy_pass $target;
+"""
+
 SPEC_FILE = os.path.join(os.path.dirname(__file__),
                          '..', 'spec', 'mig_example.json')
 
@@ -139,3 +143,12 @@ class TestMyNginx(unittest.TestCase):
                      params={'before': '2014-06-26T04:25:24Z'},
                      headers={'User-Agent': 'Me'},
                      status=200)
+
+    def test_post_limit(self):
+        self.app.post('/action/create', params='data',
+                      headers={'User-Agent': 'Me'},
+                      status=501)
+
+        self.app.post('/action/create', params='data'*100,
+                      headers={'User-Agent': 'Me'},
+                      status=413)
