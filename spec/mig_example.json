@@ -3,79 +3,73 @@
         "location": "http://127.0.0.1:8282",
         "version": "1.1",
         "resources": {
-                "/dashboard": {
-                  "GET": {}
-                },
-                "/action": {
+            "/dashboard": {
+                "GET": {}
+            },
+            "/action": {
                  "GET": {
                     "parameters": {
                         "actionid": {
-                          "validation": "digits:1,20",
-                          "required": true
+                            "validation": "digits:1,20",
+                            "required": true
                        }
-                    }}
-                },
-                "/command": {
-                 "GET": {
+                    }
+                }
+            },
+            "/command": {
+                "GET": {
                     "parameters": {
                         "commandid": {
-                          "validation": "regexp:[0-9]{1,20}",
-                          "required": true
-                       }
-                    }}
-                },
-                "/search": {
-                 "GET": {
+                            "validation": "regexp:[0-9]{1,20}",
+                            "required": true
+                        }
+                    }
+                }
+            },
+            "/search": {
+                "GET": {
                     "parameters": {
                         "before": {
-                          "validation":"RFC3339",
-                          "required": false
-                         },
-
+                            "validation":"datetime",
+                            "required": false
+                        },
                         "after": {
-                          "validation":"regexp:([0-9]{4})-([0-9]{2})-([0-9]{2})([Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]+)?)?(([Zz]|([+-])([0-9]{2}):([0-9]{2})))?",
-                          "required": false
-                         },
-
+                            "validation":"datetime",
+                            "required": false
+                        },
                         "type": {
-                          "validation":"values:action|command|agent",
-                          "required": false
-                         },
-
+                            "validation":"values:action|command|agent",
+                            "required": false
+                        },
                         "report": {
-                          "validation":"regexp:[a-zA-Z0-9]{1,64}",
-                          "required": false
-                         },
-
+                            "validation":"regexp:[a-zA-Z0-9]{1,64}",
+                            "required": false
+                        },
                         "agentname": {
-                          "validation":"regexp:[\\w\\n\\r\\t ]{0,256}",
-                          "required": false
-                         },
-
+                            "validation":"regexp:[\\w\\n\\r\\t ]{0,256}",
+                            "required": false
+                        },
                         "actionname": {
-                          "validation":"regexp:[\\w\\n\\r\\t ]{0,1024}",
-                          "required": false
-                         },
-
+                            "validation":"regexp:[\\w\\n\\r\\t ]{0,1024}",
+                            "required": false
+                        },
                         "status": {
-                          "validation":"regexp:[a-zA-Z0-9]{1,64}",
-                          "required": false
-                         },
-
+                            "validation":"regexp:[a-zA-Z0-9]{1,64}",
+                            "required": false
+                        },
                         "threatfamily": {
-                          "validation":"regexp:[a-zA-Z0-9]{1,64}",
-                          "required": false
-                         },
-
+                            "validation":"regexp:[a-zA-Z0-9]{1,64}",
+                            "required": false
+                        },
                         "limit": {
-                          "validation":"digits:1,20",
-                          "required": false
-                         }
-                    }}
+                            "validation":"digits:1,20",
+                            "required": false
+                        }
+                    }
                 }
-            ,
-                "/action/create": {
-                 "POST": {
+            },
+            "/action/create": {
+                "POST": {
                     "limits": {
                         "rates": [
                             {
@@ -90,8 +84,9 @@
                             }
                         ],
                         "max_body_size": "10k"
-                    }}
+                    }
                 }
+            }
         },
         "description": {
             "owner": "Mozilla Operations Security",
@@ -116,8 +111,13 @@
                 "Content-Security-Policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports"
             },
             "limits": {
-                "request_rate": "10/s/ip",
-                "bandwidth_rate": "5kB/s/conn",
+                "rates": [
+                    {
+                        "seconds": 10,
+                        "hits": 200,
+                        "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                    }
+                ],
                 "max_req_size": "500B",
                 "permitted_origins": [
                     "france",
