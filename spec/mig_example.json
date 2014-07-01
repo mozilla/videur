@@ -71,6 +71,7 @@
             "/action/create": {
                 "POST": {
                     "format": "json",
+                    "must_validate": false,
                     "validation": {
                         "id": "[[float64]]",
                         "name": "[[text]]",
