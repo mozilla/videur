@@ -77,7 +77,18 @@
                 "/action/create": {
                  "POST": {
                     "limits": {
-                        "request_rate": "1/s/ip",
+                        "rates": [
+                            {
+                                "seconds": 60,
+                                "hits": 10,
+                                "match": "header:Authorization AND header:User-Agent"
+                            },
+                            {
+                                "seconds": 10,
+                                "hits": 100,
+                                "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                            }
+                        ],
                         "max_body_size": "10k"
                     }}
                 }
