@@ -86,7 +86,7 @@
                             {
                                 "seconds": 10,
                                 "hits": 100,
-                                "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                                "match": "(header:X-Forwarded-For OR ipv4 OR ipv6)"
                             }
                         ],
                         "max_body_size": "10k"
