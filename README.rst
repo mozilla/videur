@@ -18,7 +18,8 @@ specification definitions, such as:
 - etc..
 
 To get a detailed list of rules that can be used,
-look at the Videur API Specification 0.1 document (XXX).
+look at the `Videur API Specification 0.1
+document <https://github.com/mozilla/videur/blob/master/spec/VAS.rst>`_
 
 
 Installation
@@ -45,8 +46,8 @@ First of all, you need to define a Lua shared dict called **cached_spec**,
 where Videur will store the API specification the backend provided.
 
 Then you need to set a **spec_url** variable with the URL of the API spec.
-This URL should be a JSON document as defined in the Videur API
-Specification 0.1 document (XXX).
+This URL should be a JSON document as defined in the `Videur API
+Specification 0.1 document <https://github.com/mozilla/videur/blob/master/spec/VAS.rst>`_
 
 Last, the **access_by_lua_file** directive needs to point to the
 **dynamic_proxy_pass.lua** script from the Videur library.
