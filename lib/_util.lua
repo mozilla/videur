@@ -104,6 +104,35 @@ function size2int(size)
 end
 
 
+-- tokenizes a set of rules and returns a Lua function that
+-- can be used to extract an id from the current request
+function compute_rules(str)
+    tokens = {}
+    for token in str:gmatch("%w+") do
+        if token:gmatch("header:%w+") then
+            token = 'ngx.req.get_headers()["' .. token:sub(1+len("header:")) .. '"])'
+        else
+            token = token:lower()
+            if token == 'and' then
+                token = ".. '++++' .. "
+            elseif token == 'or' or token == '(' or token == ')' then
+                -- plain or for now
+                token = token
+            elseif token == 'ipv4' or token == 'ipv6' then
+                -- XXX do we want to split the X-Forwarded-For chain?
+                token = '(ngx.var.http_x_forwarded_for or ngx.var.remote_addr)'
+            else
+                -- raise an error
+                error("Invalid token: " .. token)
+            end
+        end
+        tokens:insert(token)
+    end
+
+    return loadstring(tokens:concat(' '))
+end
+
+
 -- public interface
 return {
   render_template = render_template,
@@ -112,5 +141,6 @@ return {
   bad_request = bad_request,
   fetch_http_body = fetch_http_body,
   Keys = Keys,
-  size2int = size2int
+  size2int = size2int,
+  compute_rules = compute_rules
 }
