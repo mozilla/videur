@@ -18,7 +18,6 @@ build: all
 	bin/pip install nose
 	bin/pip install webtest
 	bin/pip install WSGProxy2
-	luarocks install lapis
 	luarocks install etlua
 	luarocks install luasec
 	luarocks install lua-resty-http

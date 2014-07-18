@@ -1,15 +1,3 @@
---
--- To get this working you need to add the following in your
--- Nginx configuration
---
---  http {
---     lua_shared_dict  stats   10M;
---     server {
---        access_by_lua_file /path/to/access.lua;
---     }
---  }
---
-
 -- load the config
 local max_hits = tonumber(ngx.var.max_hits) + 1
 local throttle_time = tonumber(ngx.var.throttle_time)

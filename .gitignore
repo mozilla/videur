@@ -1,0 +1,8 @@
+*.un~
+*.pyc
+.Python
+include
+bin
+*.swp
+lib/python*
+man
