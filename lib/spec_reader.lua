@@ -44,6 +44,16 @@ function get_location(spec_url, cached_spec)
 end
 
 
+function convert_match(expr)
+    -- TODO: take care of the ipv4 and ipv6 fields
+    local expr = expr:lower()
+    expr = expr:gsub("header:", "ngx.var.http_")
+    expr = expr:gsub("and", " .. ':::' .. ")
+    func = loadstring("return " .. expr)
+    return func
+end
+
+
 function match(spec_url, cached_spec)
     -- get the location from the spec url
     local location = get_location(spec_url, cached_spec)
@@ -124,14 +134,28 @@ function match(spec_url, cached_spec)
                     return util.bad_request("Bad rule " .. t)
                 end
             end
-    else
-        -- this field was not declared
-        return util.bad_request("Unknown field " .. key)
+        else
+            -- this field was not declared
+            return util.bad_request("Unknown field " .. key)
+        end
     end
 
+    -- let's prepare the limits by converting the match value
+    -- into a lua expression
+    -- XXX should be cached too...
+    local parsed_limits = {max_body_size = limits.max_body_size}
+    for key, value in pairs(limits) do
+        if key == 'rates' then
+            local rates = value
+            for __, rate in pairs(rates) do
+                rate.match = convert_match(rate.match)
+            end
+            parsed_limits.rates = rates
+        end
     end
 
-    return location, limits, params
+
+    return location, parsed_limits, params
 end
 
 
