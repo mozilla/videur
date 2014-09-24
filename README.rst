@@ -1,6 +1,8 @@
 Videur
 ======
 
+Pronounced:  */vidœʀ/*
+
 ***experimental project***
 
 Videur is a Lua library for OpenResty that will automatically parse
