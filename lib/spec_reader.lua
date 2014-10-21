@@ -32,7 +32,12 @@ function get_location(spec_url, cached_spec)
         for location, desc in pairs(service.resources) do
             for verb, def in pairs(desc) do
                 local definition = cjson.encode(def or {})
-                cached_spec:set(verb .. ":" .. location, definition)
+                local t, l = location:match('(%a+):(.*)')
+                if t == 'regexp' then
+                    cached_spec:set("regexp:" .. verb .. ":" .. l, definition)
+                else
+                    cached_spec:set(verb .. ":" .. location, definition)
+                end
             end
         end
         last_updated = os.time()
@@ -58,20 +63,33 @@ function match(spec_url, cached_spec)
     -- get the location from the spec url
     local location = get_location(spec_url, cached_spec)
 
-    -- now let's see if we have a match
+    -- now let's see if we have a direct match
     local method = ngx.req.get_method()
     local key = method .. ":" .. ngx.var.uri
     local cached_value = cached_spec:get(key)
 
     if not cached_value then
-        -- we don't!
-        -- if we are serving / we can send back a page
-        -- TODO: whitelist of URLS ?
-        if ngx.var.uri == '/' then
-            ngx.say("Welcome to Nginx/Videur")
-            return ngx.exit(200)
-        else
-            return ngx.exit(ngx.HTTP_NOT_FOUND)
+        -- we don't - we can try a regexp match now
+        for __, expr in ipairs(cached_spec:get_keys()) do
+            local t, v, l = expr:match('(%a+):(.*):(.*)')
+            if t == 'regexp' then
+                if rex.match(ngx.var.uri, l) and v == method then
+                    cached_value = cached_spec:get(expr)
+                    break
+                end
+            end
+        end
+
+        if not cached_value then
+            -- we don't!
+            -- if we are serving / we can send back a page
+            -- TODO: whitelist of URLS ?
+            if ngx.var.uri == '/' then
+                ngx.say("Welcome to Nginx/Videur")
+                return ngx.exit(200)
+            else
+                return ngx.exit(ngx.HTTP_NOT_FOUND)
+            end
         end
     end
 

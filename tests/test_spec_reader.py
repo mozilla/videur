@@ -86,3 +86,13 @@ class TestSpecReader(TestMyNginx):
         self.app.post('/action/create', params=data,
                       headers={'User-Agent': 'Me'},
                       status=413)
+
+    def test_regexp_routes(self):
+        # make sure we match regexps for URLs
+        self.app.get('/welp/1234',
+                     headers={'User-Agent': 'Me'},
+                     status=200)
+
+        self.app.get('/welp/12__',
+                     headers={'User-Agent': 'Me'},
+                     status=404)

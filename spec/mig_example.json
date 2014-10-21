@@ -6,6 +6,11 @@
             "/dashboard": {
                 "GET": {}
             },
+
+            "regexp:/welp/[a-zA-Z0-9]{1,64}": {
+                 "GET": {}
+            },
+
             "/action": {
                  "GET": {
                     "parameters": {

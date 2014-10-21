@@ -42,8 +42,9 @@ class TestMyNginx(unittest.TestCase):
     def start_server(self, locations=None, pages=None):
         if locations is None:
             locations = []
+
         if pages is None:
-            pages = ('dashboard', 'action', 'search')
+            pages = ('dashboard', 'action', 'search', 'welp/1234')
 
         locations.append({'path': '/',
                           'definition': LOCATION})
@@ -54,7 +55,12 @@ class TestMyNginx(unittest.TestCase):
 
         # and lets add some pages
         for page in pages:
-            with open(os.path.join(self.serv_dir, page), 'w') as f:
+            path = os.path.join(self.serv_dir, page)
+
+            if not os.path.isdir(os.path.dirname(path)):
+                os.makedirs(os.path.dirname(path))
+
+            with open(path, 'w') as f:
                 f.write('yeah')
 
         self._p = subprocess.Popen([sys.executable, '-m',
