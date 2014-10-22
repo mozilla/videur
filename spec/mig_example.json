@@ -4,7 +4,16 @@
         "version": "1.1",
         "resources": {
             "/dashboard": {
-                "GET": {}
+                "GET": {
+                    "limits": {
+                        "rates": [
+                            {
+                                "seconds": 1,
+                                "hits": 2,
+                                "match": "header:Authorization AND header:User-Agent"
+                            }]
+                    }
+                }
             },
 
             "regexp:/welp/[a-zA-Z0-9]{1,64}": {
