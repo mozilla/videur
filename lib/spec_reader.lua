@@ -185,7 +185,6 @@ function match(spec_url, cached_spec)
         end
     end
 
-
     return location, parsed_limits, params
 end
 

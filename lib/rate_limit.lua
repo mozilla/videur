@@ -1,29 +1,31 @@
 
-function check_rate(target, config)
-  if config then
-    -- load the config
-    local max_hits = config.hits
-    local throttle_time = config.seconds
-    local match = config.match
+function check_rate(target, rates)
+  for __, rate in pairs(rates) do
 
+    local max_hits = rate.hits + 1
+    local throttle_time = rate.seconds
+    local match = rate.match
 
     -- how many hits we got on this IP ?
-    --local stats = ngx.shared.stats
-    --local remote_ip = ngx.var.remote_addr
-    --local hits = stats:get(remote_ip)
+    local stats = ngx.shared.stats
+    local remote_ip = ngx.var.remote_addr
+    local stats_key = target .. ":" .. remote_ip
+    local hits = stats:get(stats_key)
 
-    --if hits == nil then
-    --    stats:set(remote_ip, 1, throttle_time)
-    --else
-    --    hits = hits + 1
-    --    stats:set(remote_ip, hits, throttle_time)
-    --    if hits >= max_hits then
-    --    ngx.status = 404
-    --    ngx.header.content_type = 'text/plain; charset=us-ascii'
-    --    ngx.print("Rate limit exceeded.")
-    --    ngx.exit(ngx.HTTP_OK)
-    --    end
-    --end
+    if not hits then
+        stats:set(stats_key, 1, throttle_time)
+    else
+        hits = hits + 1
+        stats:set(stats_key, hits, throttle_time)
+        if hits >= max_hits then
+            ngx.status = 429
+            ngx.header.content_type = 'text/plain; charset=us-ascii'
+            ngx.say(hits)
+            ngx.say(max_hits)
+            ngx.print("Rate limit exceeded.")
+            ngx.exit(ngx.HTTP_OK)
+        end
+    end
   end
 end
 
