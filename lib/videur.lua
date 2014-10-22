@@ -26,5 +26,5 @@ if limits.rates then
     rate_limit.check_rate(ngx.var.target, limits.rates)
 end
 
--- 4. control the bozy size
+-- 4. control the body size
 body.check_size(max_size)

@@ -4,11 +4,10 @@ function check_rate(target, rates)
 
     local max_hits = rate.hits + 1
     local throttle_time = rate.seconds
-    local match = rate.match()
 
     -- how many hits we got on this match ?
     local stats = ngx.shared.stats
-    local stats_key = target .. ":" .. match
+    local stats_key = target .. ":" .. rate.match()
     local hits = stats:get(stats_key)
 
     if not hits then
@@ -19,8 +18,6 @@ function check_rate(target, rates)
         if hits >= max_hits then
             ngx.status = 429
             ngx.header.content_type = 'text/plain; charset=us-ascii'
-            ngx.say(hits)
-            ngx.say(max_hits)
             ngx.print("Rate limit exceeded.")
             ngx.exit(ngx.HTTP_OK)
         end
