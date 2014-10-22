@@ -44,8 +44,10 @@ Usage
 
 Using Videur in Nginx is done in three directives.
 
-First of all, you need to define a Lua shared dict called **cached_spec**,
-where Videur will store the API specification the backend provided.
+First of all, you need to define a couple of Lua shared dicts:
+
+- **cached_spec**, where Videur will store the API specification the backend provided
+- **stats**, where Videur keeps track of the hits for its rate limiting feature
 
 Then you need to set a **spec_url** variable with the URL of the API spec.
 This URL should be a JSON document as defined in the `Videur API
@@ -59,6 +61,8 @@ Example::
 
     http {
         lua_shared_dict cached_spec 512k;
+        lua_shared_dict stats 512k;
+
         server {
             listen 80;
             set $spec_url "http://127.0.0.1:8282/api-specs";
