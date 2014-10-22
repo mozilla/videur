@@ -4,12 +4,11 @@ function check_rate(target, rates)
 
     local max_hits = rate.hits + 1
     local throttle_time = rate.seconds
-    local match = rate.match
+    local match = rate.match()
 
-    -- how many hits we got on this IP ?
+    -- how many hits we got on this match ?
     local stats = ngx.shared.stats
-    local remote_ip = ngx.var.remote_addr
-    local stats_key = target .. ":" .. remote_ip
+    local stats_key = target .. ":" .. match
     local hits = stats:get(stats_key)
 
     if not hits then
