@@ -29,7 +29,10 @@ function get_location(spec_url, cached_spec)
         cached_spec:set('location', service.location)
         version = service.version
         cached_spec:set('version', service.version)
+
         for location, desc in pairs(service.resources) do
+            local verbs = {}
+
             for verb, def in pairs(desc) do
                 local definition = cjson.encode(def or {})
                 local t, l = location:match('(%a+):(.*)')
@@ -38,7 +41,9 @@ function get_location(spec_url, cached_spec)
                 else
                     cached_spec:set(verb .. ":" .. location, definition)
                 end
+                verbs[verb] = true
             end
+            cached_spec:set("verbs:" .. location, util.implode(",", verbs))
         end
         last_updated = os.time()
         cached_spec:set("last-updated", last_updated)
@@ -88,7 +93,15 @@ function match(spec_url, cached_spec)
                 ngx.say("Welcome to Nginx/Videur")
                 return ngx.exit(200)
             else
-                return ngx.exit(ngx.HTTP_NOT_FOUND)
+                local existing_verbs = cached_spec:get("verbs:/dashboard")
+
+                if not existing_verbs then
+                    return ngx.exit(ngx.HTTP_NOT_FOUND)
+                else
+                    -- XXX that does not seem to be applied
+                    ngx.header['Allow'] = existing_verbs
+                    return ngx.exit(ngx.HTTP_NOT_ALLOWED)
+                end
             end
         end
     end

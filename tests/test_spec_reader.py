@@ -28,6 +28,11 @@ class TestSpecReader(TestMyNginx):
                            status=200)
         self.assertEqual(res.body, 'yeah')
 
+    def test_405(self):
+        res = self.app.delete('/dashboard', headers={'User-Agent': 'Me'},
+                              status=405)
+        # XXX check the allow header
+
     def test_reject_unknown_arg(self):
         self.app.get('/dashboard?ok=no', headers={'User-Agent': 'Me'},
                      status=400)
