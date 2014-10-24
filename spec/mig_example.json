@@ -87,7 +87,7 @@
                     "body": {
                         "format": "json",
                         "must_validate": false,
-                        "validation": {
+                        "json_validation": {
                             "id": "[[float64]]",
                             "name": "[[text]]",
                             "target": "[[text]]",

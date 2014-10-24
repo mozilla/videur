@@ -141,10 +141,36 @@ Examples::
 body
 ====
 
+A body can have three rules:
+
+- **format**: define the format of the body. can be **text** or **json**
+- **must_validate**: indicates if the body must be validated
+- **text_validation**: validation a rule as described in the previous section
+- **json_validation**: XXX
+
 XXX
 
 limits
 ======
+
+limits have 2 rules:
+
+- **rates**: a list of rate rules
+- **max_body_size**: a maximum body size expressed in kilo. example: "10k"
+
+Each rates is defined with three fields:
+- **seconds**: the throttling window in seconds.
+- **hits**: the maximum number of hits allowed in that window.
+- **match**: an expression to uniquely identify a user
+
+The **match** field is a logical expression articulated with **AND** and **OR**
+operators.
+
+Each value can be of the form:
+
+- **header:<name>**: takes the value of the header <name>
+- **ipv6**: ??
+- **ipv4**: ??
 
 XXX
 
