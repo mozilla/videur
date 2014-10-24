@@ -159,6 +159,7 @@ limits have 2 rules:
 - **max_body_size**: a maximum body size expressed in kilo. example: "10k"
 
 Each rates is defined with three fields:
+
 - **seconds**: the throttling window in seconds.
 - **hits**: the maximum number of hits allowed in that window.
 - **match**: an expression to uniquely identify a user
