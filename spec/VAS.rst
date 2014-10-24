@@ -73,7 +73,70 @@ that can be added in the method definition:
 parameters
 ==========
 
-XXX
+A validation rule can be defined for each query string parameter, in the
+**paramaters** key for the resource.
+
+The rule is identified by the option name and contains two fields:
+
+- **validation**: the validation rule.
+- **required**: a boolean to indicate if this option is mandatory when using the
+  resource
+
+The validation rule is a pattern the value of the option must match. It can
+take the following values:
+
+- **digits:<min>,<max>** : the value is composed of numbers. Its size is
+  between <min> and <max> digits
+- **regexp:<regexp>**: the value must follow the corresponding regexp
+- **values:<a>|<b>|<c>**: the value must be one of a, b, c.
+- **datetime**: the value is an ISO date
+
+Examples::
+
+    "/search": {
+        "GET": {
+            "parameters": {
+                "before": {
+                    "validation":"datetime",
+                    "required": false
+                },
+                "after": {
+                    "validation":"datetime",
+                    "required": false
+                },
+                "type": {
+                    "validation":"values:action|command|agent",
+                    "required": false
+                },
+                "report": {
+                    "validation":"regexp:[a-zA-Z0-9]{1,64}",
+                    "required": false
+                },
+                "agentname": {
+                    "validation":"regexp:[\\w\\n\\r\\t ]{0,256}",
+                    "required": false
+                },
+                "actionname": {
+                    "validation":"regexp:[\\w\\n\\r\\t ]{0,1024}",
+                    "required": false
+                },
+                "status": {
+                    "validation":"regexp:[a-zA-Z0-9]{1,64}",
+                    "required": false
+                },
+                "threatfamily": {
+                    "validation":"regexp:[a-zA-Z0-9]{1,64}",
+                    "required": false
+                },
+                "limit": {
+                    "validation":"digits:1,20",
+                    "required": false
+                }
+            }
+        }
+    }
+
+
 
 body
 ====

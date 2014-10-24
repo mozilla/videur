@@ -3,8 +3,6 @@ import unittest
 import time
 
 from webtest import TestApp
-from nginxtest.server import NginxServer
-
 from support import TestMyNginx
 
 
@@ -23,7 +21,7 @@ class TestRateLimiting(TestMyNginx):
 
     def test_rate(self):
         # the 3rd call should be returning a 429
-        res = self.app.get('/dashboard', status=200, headers=self.headers)
+        self.app.get('/dashboard', status=200, headers=self.headers)
         self.app.get('/dashboard', status=200, headers=self.headers)
         self.app.get('/dashboard', status=429, headers=self.headers)
 
