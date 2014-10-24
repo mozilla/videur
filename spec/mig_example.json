@@ -84,39 +84,41 @@
             },
             "/action/create": {
                 "POST": {
-                    "format": "json",
-                    "must_validate": false,
-                    "validation": {
-                        "id": "[[float64]]",
-                        "name": "[[text]]",
-                        "target": "[[text]]",
-                        "description": {
-                            "author": "[[text]]",
-                            "email": "[[email]]",
-                            "url": "[[text]]",
-                            "revision": "[float64]"
-                        },
-                        "threat": {
-                            "level": "[[text]]",
-                            "family": "[[text]]",
-                            "type": "[[text]]"
-                        },
-                        "validfrom": "[[datetime]]",
-                        "expireafter": "[[datetime]]",
-                        "operations": [
-                            {
-                                "module": "[[text]]",
-                                "parameters": "[[json]]"
-                            }
-                        ],
-                        "pgpsignatures": [
-                            "[[text]]"
-                        ],
-                        "starttime": "[[datetime]]",
-                        "finishtime": "[[datetime]]",
-                        "lastupdatetime": "[[datetime]]",
-                        "counters": "[[json]]",
-                        "syntaxversion": "[[float64]]"
+                    "body": {
+                        "format": "json",
+                        "must_validate": false,
+                        "validation": {
+                            "id": "[[float64]]",
+                            "name": "[[text]]",
+                            "target": "[[text]]",
+                            "description": {
+                                "author": "[[text]]",
+                                "email": "[[email]]",
+                                "url": "[[text]]",
+                                "revision": "[float64]"
+                            },
+                            "threat": {
+                                "level": "[[text]]",
+                                "family": "[[text]]",
+                                "type": "[[text]]"
+                            },
+                            "validfrom": "[[datetime]]",
+                            "expireafter": "[[datetime]]",
+                            "operations": [
+                                {
+                                    "module": "[[text]]",
+                                    "parameters": "[[json]]"
+                                }
+                            ],
+                            "pgpsignatures": [
+                                "[[text]]"
+                            ],
+                            "starttime": "[[datetime]]",
+                            "finishtime": "[[datetime]]",
+                            "lastupdatetime": "[[datetime]]",
+                            "counters": "[[json]]",
+                            "syntaxversion": "[[float64]]"
+                        }
                     },
                     "limits": {
                         "rates": [
