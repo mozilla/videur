@@ -19,6 +19,7 @@ function check_rate(target, rates)
             ngx.status = 429
             ngx.header.content_type = 'text/plain; charset=us-ascii'
             ngx.print("Rate limit exceeded.")
+            ngx.log(ngx.ERR, "Rate limit exceeded.")
             ngx.exit(ngx.HTTP_OK)
         end
     end

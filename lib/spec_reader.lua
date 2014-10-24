@@ -18,6 +18,8 @@ function get_location(spec_url, cached_spec)
 
     -- TODO: we need a way to invalidate the cache
     if not last_updated then
+        ngx.log(ngx.INFO, "Loading the api-spec file")
+
         local body, version, resources = nil
         -- we need to load it from the backend
         body = util.fetch_http_body(spec_url)
@@ -64,10 +66,7 @@ function convert_match(expr)
     -- TODO: take care of the ipv4 and ipv6 fields
     local expr = expr:lower()
     expr = expr:gsub("-", "_")
-
     expr = rex.gsub(expr, 'header:([a-zA-Z\\-_0-9]+)', _repl)
-
-    --expr = expr:gsub("header:", "ngx.var.http_")
     expr = expr:gsub("and", " .. ':::' .. ")
     expr = "return " .. expr
     return loadstring(expr)

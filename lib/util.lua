@@ -41,6 +41,8 @@ end
 function bad_request(message)
     ngx.status = 400
     ngx.say(message)
+    ngx.log(ngx.ERR, "The request did not match the spec'ed rule.")
+    ngx.log(ngx.ERR, message)
     return ngx.exit(ngx.HTTP_OK)
 end
 
