@@ -168,6 +168,25 @@ Each value can be of the form:
 - **ipv4**: ??
 
 
+Examples::
+
+    "limits": {
+        "rates": [
+            {
+                "seconds": 60,
+                "hits": 10,
+                "match": "header:Authorization AND header:User-Agent"
+            },
+            {
+                "seconds": 10,
+                "hits": 100,
+                "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+            }
+        ],
+        "max_body_size": "10k"
+    }
+
+
 configuration
 -------------
 
