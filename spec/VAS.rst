@@ -141,14 +141,8 @@ Examples::
 body
 ====
 
-A body can have three rules:
+Not yet defined.
 
-- **format**: define the format of the body. can be **text** or **json**
-- **must_validate**: indicates if the body must be validated
-- **text_validation**: validation a rule as described in the previous section
-- **json_validation**: XXX
-
-XXX
 
 limits
 ======
@@ -173,17 +167,31 @@ Each value can be of the form:
 - **ipv6**: ??
 - **ipv4**: ??
 
-XXX
-
-
 
 configuration
 -------------
 
-XXX
+Not yet defined.
 
 description
 -----------
 
-XXX
+description contains informative fields. Any information can be added in this
+section.
+
+Suggested values:
+
+- **owner**: name of the owner of the service
+- **developer**: name of the main developer.
+- **operator**: name of the main operator
+
+Example::
+
+    "description": {
+        "owner": "Mozilla Operations Security",
+        "developer": "Julien Vehent <jvehent@mozilla.com>",
+        "operator": "Julien Vehent <jvehent@mozilla.com>"
+    }
+
+
 
