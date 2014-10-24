@@ -5,13 +5,17 @@
         "resources": {
             "/dashboard": {
                 "GET": {
+                    "request_body": {
+                        "type": "empty"
+                    },
                     "limits": {
                         "rates": [
                             {
                                 "seconds": 1,
                                 "hits": 2,
                                 "match": "header:Authorization AND header:User-Agent"
-                            }]
+                            }
+                        ]
                     }
                 }
             },
@@ -84,41 +88,8 @@
             },
             "/action/create": {
                 "POST": {
-                    "body": {
-                        "format": "json",
-                        "must_validate": false,
-                        "json_validation": {
-                            "id": "[[float64]]",
-                            "name": "[[text]]",
-                            "target": "[[text]]",
-                            "description": {
-                                "author": "[[text]]",
-                                "email": "[[email]]",
-                                "url": "[[text]]",
-                                "revision": "[float64]"
-                            },
-                            "threat": {
-                                "level": "[[text]]",
-                                "family": "[[text]]",
-                                "type": "[[text]]"
-                            },
-                            "validfrom": "[[datetime]]",
-                            "expireafter": "[[datetime]]",
-                            "operations": [
-                                {
-                                    "module": "[[text]]",
-                                    "parameters": "[[json]]"
-                                }
-                            ],
-                            "pgpsignatures": [
-                                "[[text]]"
-                            ],
-                            "starttime": "[[datetime]]",
-                            "finishtime": "[[datetime]]",
-                            "lastupdatetime": "[[datetime]]",
-                            "counters": "[[json]]",
-                            "syntaxversion": "[[float64]]"
-                        }
+                    "request_body": {
+                        "type": "json"
                     },
                     "limits": {
                         "rates": [
@@ -130,7 +101,12 @@
                             {
                                 "seconds": 10,
                                 "hits": 100,
-                                "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                                "match": "header:X-Forwarded-For"
+                            },
+                            {
+                                "seconds": 10,
+                                "hits": 100,
+                                "match": "$binary_remote_addr"
                             }
                         ],
                         "max_body_size": "10k"
@@ -144,42 +120,27 @@
             "operator": "Julien Vehent <jvehent@mozilla.com>"
         },
         "configuration": {
-            "authentication": "fxa assertion",
-            "tls": {
-                "require_backward_compatibility": false,
-                "ocsp_stapling": {
-                    "enabled": true,
-                    "must-staple": 7776000
-                },
-                "hsts": {
-                    "enabled": true,
-                    "max-age": 15768000
-                }
-            },
-            "content security policy": {
-                "enabled": true,
-                "Content-Security-Policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports"
+            "add_header": {
+                "Strict-Transport-Security": "max-age=15768000",
+                "Content-Security-Policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports",
+                "Public-Key-Pins": "max-age=500; pin-sha1=\"4n972HfV354KP560yw4uqe/baXc=\"; pin-sha1=\"IvGeLsbqzPxdI0b0wuj2xVTdXgc=\""
             },
             "limits": {
                 "rates": [
                     {
                         "seconds": 10,
                         "hits": 200,
-                        "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                        "match": "header:X-Forwarded-For"
+                    },
+                    {
+                        "seconds": 10,
+                        "hits": 200,
+                        "match": "$binary_remote_addr"
                     }
                 ],
-                "max_req_size": "500B",
-                "permitted_origins": [
-                    "france",
-                    "usa",
-                    "uk"
-                ],
-                "ip whitelist": [],
-                "ip blacklist": []
-            },
-            "logging": {
-                "location": "amqps://mozdef.mozilla.org/mig/"
+                "max_req_size": "500B"
             }
         }
-    }
+    },
+    "syntax_version": 0.2
 }

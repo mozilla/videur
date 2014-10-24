@@ -2,42 +2,49 @@
 Videur API Specification
 ========================
 
-:version: 0.1
+:version: 0.2
 :author: Tarek Ziadé <tarek@mozilla.com>
 :author: Julien Vehent <jvehent@mozilla.com>
 
-The **Videur API Specification** file is a JSON document a web application
-can provide to describe its HTTP endpoints.
+.. sectnum::
+.. contents:: Table of Contents
 
-The standard location to publish this document is <root>/api-specs but it
-can be located elsewhere if needed.
+The **Videur API Specification** file is a JSON document that defines the
+resources and behaviour of a web application. The goal of Videur is to
+implement early filtering and validation of requests, to protect a web
+application.
 
-The JSON document is a mapping containing a single **service** key.
+By default, a web application can publish a Videur API Specification file
+at `<root>/api-specs`. That location is configurable.
 
-The service key is in turn a mapping containing the following keys:
+
+The JSON specification defines a mapping containing a single **service**
+section, that itself containing the following sections:
 
 - **location** -- the root url for the service
 - **version** -- the service version
-- **resources** -- a list of resource for the service (see below)
+- **resources** -- a list of HTTP resources for the service (see below)
 - **configuration** -- a list of configuration options for the service (see below)
 - **description** -- a description of the service (see below)
+- **syntax_version** -- the Videur spec version, should be `0.2`
 
-Examples for the **location** and **version** fields::
+Examples for the **location** and **version** fields:
 
-    {
-        "service": {
-            "location": "http://127.0.0.1:8282",
-            "version": "1.1",
-            ...
-        }
-    }
+.. code:: json
 
+	{
+		"service": {
+			"location": "http://127.0.0.1:8282",
+			"version": "1.1",
+			...
+		},
+		"syntax_version": 0.2
+	}
 
 resources
 ---------
-
-This key contains a mapping describing all HTTP endpoints. Each resource is
-identified the exact URI of the endpoint or a regular expression.
+This section contains a mapping describing all HTTP endpoints. Each resource is
+identified by the exact URI of the endpoint or a regular expression.
 
 Examples of valid URIs:
 
@@ -45,53 +52,52 @@ Examples of valid URIs:
 - **/action/one**
 - **regexp:/welp/[a-zA-Z0-9]{1,64}**
 
-Regular expression based URIs are prefixed by **regexp:**
+Regular expression based URIs are prefixed with the keyword `regexp:`.
 
 The value of each resource is a mapping of all implemented methods.
 
-Example::
+Example:
 
-    "/action": {
-        "GET": {},
-        "DELETE": {}
-    }
+.. code:: json
 
+	"/action": {
+		"GET": {},
+		"DELETE": {}
+	}
 
-This specification does not enforce any rule about the lack of the body
-entity on methods like GET, as this part of the HTTP specification
-is a bit vague. Some software like ElasticCache for instance will define
-GET APIs with body content.
-
-When specifying methods on a resources, there are a list of rules
-that can be added in the method definition:
+Each resource is composed of methods among `GET`, `POST`, `PUT`, `PATCH` or
+`DELETE`. Each method defines specific rules:
 
 - **parameters**: rules on the query string
 - **body**: rules on the body
 - **limits**: limits on the request (rate, size, etc.)
 
-
 parameters
 ==========
 
-A validation rule can be defined for each query string parameter, in the
-**paramaters** key for the resource.
+The `parameters` section contains validation rules that are applied on the
+query string of the request. Validation rules follow a simple format:
 
-The rule is identified by the option name and contains two fields:
+- **required**: a boolean to indicate if this parameter is mandatory, meaning
+  that requests that omit the parameter will be rejected
+- **validation**: the validation rule itself
 
-- **validation**: the validation rule.
-- **required**: a boolean to indicate if this option is mandatory when using the
-  resource
-
-The validation rule is a pattern the value of the option must match. It can
-take the following values:
+validation rule
+~~~~~~~~~~~~~~~
+The validation rule is a pattern that represent the expected parameter value.
+It can take the following values:
 
 - **digits:<min>,<max>** : the value is composed of numbers. Its size is
-  between <min> and <max> digits
+  between <min> and <max> digits. digits are treated as float64.
 - **regexp:<regexp>**: the value must follow the corresponding regexp
-- **values:<a>|<b>|<c>**: the value must be one of a, b, c.
-- **datetime**: the value is an ISO date
+- **values:<a>|<b>|<c>**: the value must be one of a, b, c. Each component is
+  treated as a string.
+- **datetime**: the value is an ISO date following RFC3339 format (ex:
+  `1937-01-01T12:00:27.87+00:20`)
 
-Examples::
+Example:
+
+.. code:: json
 
     "/search": {
         "GET": {
@@ -129,30 +135,45 @@ Examples::
                     "required": false
                 },
                 "limit": {
-                    "validation":"digits:1,20",
+                    "validation":"digits:1,10000000",
                     "required": false
                 }
             }
         }
     }
 
-
-
 body
 ====
 
-Not yet defined.
+Videur can perform basic validation of a request body. This validation is
+limited, because complex body checking would be too costly and hard to
+maintain. Videur thus limits itself to verifying that a request body is either
+empty, or is of a specific type. The accepted types are:
 
+- **empty**: the request body is exactly 0 bytes
+- **json**: the request body is correct json
+- **xml**: the request body is correct xml
+- **base64**: the request body is correctly encoded in base64
 
 limits
 ======
 
-limits have 2 rules:
+Limits can be enforce at the resource method level. The goal is to provide
+granular rate limiting to protect specific resources.
 
-- **rates**: a list of rate rules
-- **max_body_size**: a maximum body size expressed in kilo. example: "10k"
+Limits can be applied at two levels:
 
-Each rates is defined with three fields:
+- **rates**: a control on the request rate
+- **max_body_size**: a maximum body size expressed in bytes. example: "10k"
+
+Rates
+~~~~~
+
+Rates is an array, meaning that multiple rates can be defined for each
+resource. When multiple rates are defined, all of them are tested against
+incoming requests, and the first one that fails will block the request.
+
+Rates are defined with three fields:
 
 - **seconds**: the throttling window in seconds.
 - **hits**: the maximum number of hits allowed in that window.
@@ -164,11 +185,11 @@ operators.
 Each value can be of the form:
 
 - **header:<name>**: takes the value of the header <name>
-- **ipv6**: ??
-- **ipv4**: ??
+- **any nginx variable**: such as $binary_remote_addr or just $remote_addr
 
+Examples:
 
-Examples::
+.. code:: json
 
     "limits": {
         "rates": [
@@ -180,23 +201,46 @@ Examples::
             {
                 "seconds": 10,
                 "hits": 100,
-                "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                "match": "header:X-Forwarded-For OR $binary_remote_addr"
             }
         ],
         "max_body_size": "10k"
     }
 
-
 configuration
 -------------
+The configuration section defines behaviour that is global to the web
+application. This section can be used to insert response headers, and declare
+global limits. Global limits are overriden by limits defined by resources.
 
-Not yet defined.
+add_header
+==========
+
+This section contains HTTP header that are inserted in HTTP response. The
+format follow a simple key:value syntax and no grammar is enforced by Videur.
+
+Example:
+
+.. code:: json
+
+	"add_header": {
+		"Strict-Transport-Security": "max-age=15768000",
+		"Content-Security-Policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports",
+		"Public-Key-Pins": "max-age=500; pin-sha1=\"4n972HfV354KP560yw4uqe/baXc=\"; pin-sha1=\"IvGeLsbqzPxdI0b0wuj2xVTdXgc=\""
+	},
+
+limits
+======
+This section uses the exact same syntax as described above in the
+**resources/limits** section. Global limits are used when no local limits are
+defined, and provide a base protection level to all resources.
 
 description
 -----------
 
 description contains informative fields. Any information can be added in this
-section.
+section. This is purely for management purpose and does not control the
+behaviour of the web application.
 
 Suggested values:
 
@@ -204,13 +248,12 @@ Suggested values:
 - **developer**: name of the main developer.
 - **operator**: name of the main operator
 
-Example::
+Example:
+
+.. code:: json
 
     "description": {
         "owner": "Mozilla Operations Security",
         "developer": "Julien Vehent <jvehent@mozilla.com>",
         "operator": "Julien Vehent <jvehent@mozilla.com>"
     }
-
-
-
