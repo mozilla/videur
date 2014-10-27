@@ -31,13 +31,7 @@ To install Videur, you need to have an OpenResty environment deployed.
 
 Then you can run::
 
-	make install
-
-If you have a specific Lua lib directory, you can use the **LUA_LIB_DIR** and
-**LUA_TREE** options.
-
-This command will simply copy all the lua files of the Videur lib into
-the OpenResty lib directory.
+	luarock install videur
 
 
 Usage
