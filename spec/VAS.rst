@@ -164,8 +164,10 @@ operators.
 Each value can be of the form:
 
 - **header:<name>**: takes the value of the header <name>
-- **ipv6**: ??
-- **ipv4**: ??
+- **var:<value>**: takes the value of a variable. Currently defined
+  variables are:
+  - **remote_address**: client IP
+  - **binary_remote_address**: client IP in binary form
 
 
 Examples::
@@ -180,7 +182,7 @@ Examples::
             {
                 "seconds": 10,
                 "hits": 100,
-                "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                "match": "header:X-Forwarded-For OR var:remote_addr"
             }
         ],
         "max_body_size": "10k"

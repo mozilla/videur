@@ -11,6 +11,8 @@ from nginxtest.server import NginxServer
 import requests
 
 
+PY3 = sys.version_info.major == 3
+
 LIBDIR = os.path.normpath(os.path.join(os.path.dirname(__file__),
                           '..', 'lib'))
 
@@ -63,8 +65,13 @@ class TestMyNginx(unittest.TestCase):
             with open(path, 'w') as f:
                 f.write('yeah')
 
+        if PY3:
+            server = 'http.server'
+        else:
+            server = 'SimpleHTTPServer'
+
         self._p = subprocess.Popen([sys.executable, '-m',
-                                    'SimpleHTTPServer', '8282'],
+                                    server, '8282'],
                                     cwd=self.serv_dir,
                                     stderr=subprocess.PIPE,
                                     stdout=subprocess.PIPE)
@@ -78,6 +85,7 @@ class TestMyNginx(unittest.TestCase):
                 time.sleep(.1)
         if res is None:
             self._kill_python_server()
+
             raise IOError("Could not start the Py server")
 
         try:

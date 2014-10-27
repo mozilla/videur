@@ -10,7 +10,7 @@
                             {
                                 "seconds": 1,
                                 "hits": 2,
-                                "match": "header:Authorization AND header:User-Agent"
+                                "match": "header:Authorization AND header:User-Agent AND var:remote_addr"
                             }]
                     }
                 }
@@ -130,7 +130,7 @@
                             {
                                 "seconds": 10,
                                 "hits": 100,
-                                "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                                "match": "header:X-Forwarded-For OR var:remote_addr"
                             }
                         ],
                         "max_body_size": "10k"
@@ -165,7 +165,7 @@
                     {
                         "seconds": 10,
                         "hits": 200,
-                        "match": "header:X-Forwarded-For OR ipv4 OR ipv6"
+                        "match": "header:X-Forwarded-For OR var:remote_addr"
                     }
                 ],
                 "max_req_size": "500B",

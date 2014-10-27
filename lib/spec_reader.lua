@@ -56,17 +56,26 @@ function get_location(spec_url, cached_spec)
 end
 
 
-function _repl(match, captures)
+function _repl_var(match, captures)
+    local res = 'ngx.var.' .. match
+    res = res .. ' or ""'
+    return res
+end
+
+
+function _repl_header(match, captures)
     local res = 'ngx.var.http_' .. match
     res = res .. ' or ""'
     return res
 end
 
+
 function convert_match(expr)
     -- TODO: take care of the ipv4 and ipv6 fields
     local expr = expr:lower()
     expr = expr:gsub("-", "_")
-    expr = rex.gsub(expr, 'header:([a-zA-Z\\-_0-9]+)', _repl)
+    expr = rex.gsub(expr, 'header:([a-zA-Z\\-_0-9]+)', _repl_header)
+    expr = rex.gsub(expr, 'var:([a-zA-Z\\-_0-9]+)', _repl_var)
     expr = expr:gsub("and", " .. ':::' .. ")
     expr = "return " .. expr
     return loadstring(expr)
