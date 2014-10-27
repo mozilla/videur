@@ -10,16 +10,8 @@ VIRTUALENV = virtualenv
 
 all: ;
 
-install: all
-	$(INSTALL) -d $(DESTDIR)/$(LUA_LIB_DIR)/videur
-	$(INSTALL) lib/*.lua $(DESTDIR)/$(LUA_LIB_DIR)/videur/
-
-build: all
-	luarocks --tree=$(LUA_TREE) install luasec
-	luarocks --tree=$(LUA_TREE) install lua-resty-http
-	luarocks --tree=$(LUA_TREE) install lua-cjson
-	luarocks --tree=$(LUA_TREE) install lrexlib-posix
-	luarocks --tree=$(LUA_TREE) install date
+install: 
+	luarocks make
 
 export PATH := ./lib:$(PATH)
 
