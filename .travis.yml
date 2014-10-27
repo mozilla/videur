@@ -1,0 +1,12 @@
+language: python
+python: 2.7
+script:
+    - nosetests -sv tests
+install:
+    - pip install nose
+    - sudo apt-get install luajit
+    - sudo apt-get install luarocks
+notifications:
+    email: 
+    - tarek@mozilla.com
+    on_success: change
