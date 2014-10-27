@@ -1,9 +1,11 @@
 language: python
 python: 2.7
+env:
+    PATH=./lib:$(PATH)
 script:
     - nosetests -sv tests
 install:
-    - pip install nose
+    - pip install nose webtest git+git://github.com/tarekziade/NginxTest WSGIProxy2
     - sudo apt-get install luajit
     - sudo apt-get install luarocks
 notifications:
